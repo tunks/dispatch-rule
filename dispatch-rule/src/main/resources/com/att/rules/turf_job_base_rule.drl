@@ -1,0 +1,59 @@
+package com.att.rules;
+
+import java.util.ArrayList;
+
+import com.att.dispatch.rule.model.Turf;
+import com.att.dispatch.rule.model.Job;
+import com.att.dispatch.rule.model.Group;
+
+global  com.att.dispatch.rule.process.JobPool job_pool
+global  com.att.dispatch.rule.process.TurfPool turf_pool
+
+rule "new job"
+when
+   $job: Job($id : id , $status: status != null,  $turfID : turfID != null )
+   not ( exists ( Job(id == $id, $status == status , turfID == $turfID ) )  )
+   exists Turf(id == $turfID)
+then
+   Turf turf = turf_pool.find($turfID.toString());
+   modify($job){ setTurfName(turf.getName())  }
+   update(turf);
+end
+
+rule "status group does not exists"
+when
+    $job: Job($status: status != null, $turfID: turfID)
+    $turf: Turf(id == $turfID, $groups: groups)
+    Boolean(booleanValue == false) from $groups.containsKey($status)
+then
+    int value = 1;
+    //update the total number of jobs by 1
+    $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() +value);    
+    $groups.put($status,new Group($status,value));    
+    //send message to notifier 
+    System.out.println(" turf job rule super -no exist ");
+    Message msg = new Message();
+    msg.add("messages:jobs", job_pool.save($job));
+    insert(msg);
+end
+
+
+rule "status group exists"
+when
+    $job: Job($status: status != null, $turfID: turfID)
+    $turf: Turf(id == $turfID, $groups: groups)
+    Boolean(booleanValue == true) from $groups.containsKey($status)
+then 
+    int value = 1;
+    //update the total number of jobs by 1
+    $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() +value);
+   //set the value and calculate the perecentage
+    int newValue = ((Group)$groups.get($status)).getValue() + value; 
+    //set the new value and percentage
+    ((Group)$groups.get($status)).setValue(newValue);
+    //update store and send message to notifier
+     System.out.println(" turf job rule super -exist ");
+    Message msg = new Message();
+    msg.add("messages:jobs", job_pool.save($job));
+    insert(msg); 
+end

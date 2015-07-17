@@ -1,0 +1,168 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.att.dispatch.rule.model;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+/**
+ *
+ * @author ebrima
+ */
+public class Job implements Serializable {
+    private Long id;
+    private String status;
+    private Long ticketID;
+    private Long turfID;
+    private String turfName;
+    private Long dispatchID;
+    private String startTime;
+    private String endTime;
+    private Long duration;
+    private int zipCode;
+    
+    private String message;
+    private String updatedOn;
+    
+    public Job(){
+     //id -- generate a random number
+    }
+    
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getTicketID() {
+        return ticketID;
+    }
+
+    public void setTicketID(Long ticketID) {
+        this.ticketID = ticketID;
+    }
+
+    public Long getDispatchID() {
+        return dispatchID;
+    }
+
+    public void setDispatchID(Long dispatchID) {
+        this.dispatchID = dispatchID;
+    }
+
+    public Long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Long duration) {
+        this.duration = duration;
+    }
+
+    public Long getTurfID() {
+        return turfID;
+    }
+
+    public void setTurfID(Long turfID) {
+        this.turfID = turfID;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getUpdatedOn() {
+        return updatedOn;
+    }
+
+    public void setUpdatedOn(String updatedOn) {
+        this.updatedOn = updatedOn;
+    }
+   
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 23 * hash + Objects.hashCode(this.id);
+        hash = 23 * hash + Objects.hashCode(this.ticketID);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj)
+            return true;
+        
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        
+        Job other = (Job) obj;
+        if (!this.id.equals(other.id) || !this.ticketID.equals(other.ticketID)) {
+            return false;
+        }
+ 
+        return true;
+    }
+
+    public int getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(int zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public String getTurfName() {
+        return turfName;
+    }
+
+    public void setTurfName(String turfName) {
+        this.turfName = turfName;
+    }
+    
+    @Override
+    public String toString(){
+      return "{job: {" +
+                   "id:"+id+
+                    ",ticketID: "+ticketID+
+                    ",status:"+status+
+                    ",zipCode:" + zipCode+
+                    ",turfID: "+turfID+
+                    ",startTime: "+startTime+
+                    ",endTime:" +endTime
+                +"}"
+              + "}";
+    }
+}

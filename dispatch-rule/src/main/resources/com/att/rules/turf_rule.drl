@@ -1,0 +1,30 @@
+package com.att.rules;
+
+import com.att.dispatch.rule.model.Turf;
+import com.att.dispatch.rule.model.Message;
+
+global  com.att.dispatch.rule.process.BasePool turf_pool
+
+/**
+ *
+ * @author ebrima
+  Turf rules
+ */
+rule "a turf is added" 
+//no-loop true
+when
+   $turf : Turf(active == false)
+    //not (exists Turf( id ==  $turf.getId() ) )
+then
+  //store  the new turf to the datastore and get the json data
+   //publish notification message
+   System.out.println("rule turf 3");
+   //set active to true
+   modify($turf){ setActive(true) }
+   String turf_data = turf_pool.save($turf);
+   System.out.println("Turf data"+turf_data);
+   Message msg = new Message();
+   msg.add("messages:turfs", turf_data);
+   System.out.println("notifier sending message from new turf");
+   insert(msg);
+end

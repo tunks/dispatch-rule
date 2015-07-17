@@ -1,0 +1,17 @@
+package com.att.rules;
+
+import com.att.dispatch.rule.model.Dispatch;
+
+global  com.att.dispatch.rule.process.BasePool dispatch_pool
+
+/**
+ *
+ * @author ebrima
+ */
+rule "new dispatch named ebrima"
+when
+  $d : Dispatch(name == "ebrima")
+then
+   //dispatch_pool.insert($dispatch);
+   System.out.println("Nice seeing you Mr "+$d.getName());
+end

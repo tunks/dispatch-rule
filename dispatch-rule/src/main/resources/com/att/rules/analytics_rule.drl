@@ -1,0 +1,45 @@
+package com.att.rules;
+
+import java.util.List;
+import com.att.dispatch.rule.model.Message;
+import com.att.dispatch.rule.model.Analytic;
+import com.att.dispatch.rule.process.Compute;
+import com.att.dispatch.rule.process.ComputeFactory;
+
+global  com.att.dispatch.rule.process.TurfPool turf_pool
+
+rule "compute and generate turf analytic series"
+  no-loop true
+when
+    $analytic : Analytic( $name: name == "TURF_SERIES")
+then
+    List turfs = turf_pool.getAll();
+      Compute series = ComputeFactory.newAnalysisSeries($name);
+      //get all turfs
+      series.compute(turfs);
+      String results = (String)series.getResults();
+      //generate group series
+      //insert message to send message
+      Message msg = new Message();    
+      msg.add("messages:analytics:turfs:series",results);
+      insert(msg);
+end
+
+
+rule "compute and generate group statistics"
+no-loop true
+when
+    $analytic : Analytic( $name: name == "TURF_GROUP_SERIES")
+then
+   //get all turfs
+    List turfs = turf_pool.getAll();
+        Compute series = ComputeFactory.newAnalysisSeries($name);
+        series.compute(turfs);
+        String results = (String)series.getResults();
+        $analytic.setResults(results);
+       
+        //message to send
+        Message msg = new Message();
+        msg.add("messages:analytics:turfs:groups",results);
+        insert(msg);
+end

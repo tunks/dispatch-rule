@@ -1,0 +1,16 @@
+package com.att.rules;
+
+import com.att.dispatch.rule.model.Message;
+global  com.att.dispatch.rule.process.INotifier notifier
+
+rule "send notification"
+when
+   $message: Message()
+then
+  //publisher sends message
+   System.out.println("Notification send message v17 ebrima");
+   System.out.println($message);
+   notifier.send($message);
+   //remote the message from working memory
+   retract($message);
+end
