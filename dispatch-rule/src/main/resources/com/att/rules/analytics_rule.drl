@@ -16,10 +16,10 @@ then
      Compute series = ComputeFactory.newAnalysisSeries($name);
      series.compute(turfs);
      String results = (String)series.getResults();
-    retract($analytic);
+     //retract($analytic);
      //generate group series and send message
      Message msg = new Message();    
-     msg.add("messages:analytics:turfs:series",results);
+     msg.add("messages:analytics:turf-series",results);
      insert(msg);
 end
 
@@ -33,7 +33,7 @@ then
     series.compute(turfs);
     String results = (String)series.getResults();
     //$analytic.setResults(results);
-    retract($analytic);
+    //retract($analytic);
      //generate series and send message
      Message msg = new Message();
      msg.add("messages:analytics:turfs:groups",results);
