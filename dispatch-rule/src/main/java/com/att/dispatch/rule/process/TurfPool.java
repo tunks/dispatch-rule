@@ -35,10 +35,10 @@ public class TurfPool extends BasePool <Turf>  {
     //save the turf and notification the turf observers 
 	@Override
 	public String save(Turf object) throws DataStoreException {
-	    String key = getPrimaryKey();
-        String field = object.getId().toString();
-        //notify all groups and update observer groups
-        notifyObservers(object);
-        return save(key,field,object);
+	 String key = getPrimaryKey();
+         String field = object.getId().toString();
+         //notify all groups and update observer groups
+         notifyObservers(object);
+         return save(key,field,object);
 	}
 }
