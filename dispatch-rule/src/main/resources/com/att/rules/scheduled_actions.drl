@@ -8,6 +8,6 @@ when
    not Analytic( name == "TURF_GROUP_SERIES")
 then
     System.out.println("TURF_GROUP_SERIES");
- //   insert(new Analytic("TURF_GROUP_SERIES"));
+    insert(new Analytic("TURF_GROUP_SERIES"));
    // insert(new Analytic("TURF_SERIES"));
 end
