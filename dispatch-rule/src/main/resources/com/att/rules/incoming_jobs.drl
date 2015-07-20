@@ -10,7 +10,7 @@ rule "a pending job"
   no-loop true
 when
    $new_job: Job( $id : id ,  $turfID : turfID , $status: status =="PENDING"  )
-/ / not (exists (Job(id == $id , status != $status, turfID !=  $turfID )) )
+   // not (exists (Job(id == $id , status != $status, turfID !=  $turfID )) )
 then
    Turf turf = turf_pool.find( $turfID.toString() );
    //insert new job into the turf rule to update the turf
