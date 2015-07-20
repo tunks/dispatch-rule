@@ -29,7 +29,7 @@ then
     //update the data store  and send message to notifier
     Message msg = new Message();
     msg.add("messages:turfs:jobs", job_pool.save($job));
-    msg.add("turfs",turf_pool.insert($turf));
+    msg.add("turfs",turf_pool.save($turf));
     insert(msg);
     retract($turf);
     retract($job);
@@ -37,7 +37,6 @@ end
 
 //rule to add a new job to a turf, and when statistic group is exists
 rule "a pending job is added, existing group and invoked  a turf to update"
- //salience 11
 when
     $job: Job($status: status == "PENDING")
     $turf: Turf(id == $job.getTurfID(), $groups: groups)
