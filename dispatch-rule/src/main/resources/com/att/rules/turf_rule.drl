@@ -9,7 +9,7 @@ rule "a turf is added"
 no-loop true
 when
    $turf : Turf($id: id, active == false)
-    not  Turf( id ==  $id ) 
+    not (exists Turf( id ==  $id ) )
 then
   //update the store and send message
    modify($turf){ setActive(true) }
