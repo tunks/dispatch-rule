@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import com.att.dispatch.rule.model.Turf;
 import com.att.dispatch.rule.model.Job;
 import com.att.dispatch.rule.model.Flag;
+import com.att.dispatch.rule.model.Message;
 import com.att.dispatch.rule.process.RuleHelper;
 
 global  com.att.dispatch.rule.process.JobPool job_pool
@@ -56,11 +57,11 @@ then
    if( difference > $duration && 
       ( job!= null && !job.getStatus().equals("COMPLETE") )
      ){     
-        Turf turf = turf_pool.find(key);
+        // Turf turf = turf_pool.find(key);
         //insert into the turf rule to update the turf
         $dispatched_job.setFlag( new Flag("GREEN") );
-        update($dispatched_job);
-        insert(turf);
+         Message msg = new Message();
+         msg.add("messages:jobs", job_pool.save($dispatched_job));
     }
     else{
         retract($dispatched_job);
