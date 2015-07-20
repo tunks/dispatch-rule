@@ -36,8 +36,7 @@ then
     retract($turf);
     retract($job);
      //analytics
-    insert(new Analytic("TURF_GROUP_SERIES"));
-    insert(new Analytic("TURF_SERIES"));
+    insert(new Analytic("TURF_GROUP_SERIES"));f
 end
 
 rule "a pending job is added, update existing status group"
@@ -68,7 +67,6 @@ then
 
      //analytics
     insert(new Analytic("TURF_GROUP_SERIES"));
-    insert(new Analytic("TURF_SERIES"));
 end
 /*******PENDING -ends *******/
 
@@ -94,7 +92,6 @@ then
 
      //analytics
     insert(new Analytic("TURF_GROUP_SERIES"));
-    insert(new Analytic("TURF_SERIES"));
 end
 
 rule "a DISPATCHED job is added, update existing status group"
@@ -121,7 +118,6 @@ then
 
      //analytics
     insert(new Analytic("TURF_GROUP_SERIES"));
-    insert(new Analytic("TURF_SERIES"));
 end
 /*******DISPATCHED -ends *******/
 
@@ -150,7 +146,6 @@ then
      
      //analytics
     insert(new Analytic("TURF_GROUP_SERIES"));
-    insert(new Analytic("TURF_SERIES"));
 end
 
 rule "a COMPLETE job is added, update existing status group"
@@ -182,6 +177,5 @@ then
  
      //analytics
     insert(new Analytic("TURF_GROUP_SERIES"));
-    insert(new Analytic("TURF_SERIES"));
 end
 /*******COMPLETE -ends *******/
