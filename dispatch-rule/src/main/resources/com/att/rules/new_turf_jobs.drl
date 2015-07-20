@@ -36,7 +36,7 @@ then
     retract($turf);
     retract($job);
      //analytics
-    insert(new Analytic("TURF_GROUP_SERIES"));f
+    insert(new Analytic("TURF_GROUP_SERIES"));
 end
 
 rule "a pending job is added, update existing status group"
@@ -173,8 +173,7 @@ then
     //remove from the rules working memory
     retract($turf);
     retract($job);
- 
- 
+
      //analytics
     insert(new Analytic("TURF_GROUP_SERIES"));
 end
