@@ -7,7 +7,7 @@ rule "send notification"
 when
    $message: Message()
 then
-   System.out.println("Notification send message v27 ebrima");
+   System.out.println("Notification send message v28 ebrima");
    System.out.println($message);
    notifier.send($message);
    //remote the message from working memory
