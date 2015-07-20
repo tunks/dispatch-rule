@@ -15,7 +15,6 @@ when
     $job: Job( $id: id, $status: status == "PENDING" , $turfID : turfID)
     $turf: Turf( id ==  $turfID , $totalNumberOfJobs: totalNumberOfJobs,  $groups: groups)
     Boolean( booleanValue == false) from $groups.containsKey($status)
-   not (exists (Job( id == $id )) )
 then 
     int value = 1;
    System.out.println("System not existing "+$status);
@@ -35,7 +34,6 @@ when
     $job: Job( $id: id, $turfID : turfID, $status: status == "PENDING")
     $turf: Turf( id == $turfID, $totalNumberOfJobs : totalNumberOfJobs, $groups: groups)
     Boolean(booleanValue == true) from $groups.containsKey($status)
-    not (exists (Job( id == $id )) )
 then 
     //add new group
     int value = 1;
