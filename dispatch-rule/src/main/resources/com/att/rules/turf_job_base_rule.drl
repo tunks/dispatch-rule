@@ -30,6 +30,8 @@ end
 
 
 rule "status group exists"
+activation-group "existing job status"
+salience 101
 when
     $job: Job($status: status != null, $turfID: turfID)
     $turf: Turf(id == $turfID, $groups: groups)
