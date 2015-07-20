@@ -13,7 +13,7 @@ declare Job
   @properChangeSupport
 end
 
-/*********  PENDING RULE - starts here *******************/
+/*********  PENDING RULE - starts*******************/
 rule "a pending job is added,create a turf status group"
 when
     $job: Job($id: id, $turfID: turfID, $status: status == "PENDING")
@@ -64,4 +64,110 @@ then
     retract($turf);
     retract($job);
 end
-/*******PENDING -ends here *******/
+/*******PENDING -ends *******/
+
+/*********  DISPATCHED RULE - starts*******************/
+rule "a dispatched job is added,create a turf status group"
+when
+    $job: Job($id: id, $turfID: turfID, $status: status == "DISPATCHED")
+    $turf: Turf(id == $turfID, $groups: groups)
+    Boolean(booleanValue == false) from $groups.containsKey($status)
+then 
+    //add new group
+    int value = 1;
+    //update the total number of jobs by 1
+    $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() +value);
+    //set the value
+    $turf.getGroups().put($status,new Group($status,value));
+ 
+   //update the data store  and send message to notifier
+    Message msg = new Message();
+    msg.add("messages:turfs:jobs", job_pool.save($job));
+    msg.add("messages:turfs", turf_pool.save($turf));
+    insert(msg);
+    //remove from memory
+    retract($turf);
+    retract($job);
+end
+
+//rule to add a new job to a turf, and when statistic group is exists
+rule "a DISPATCHED job is added, existing group and invoked  a turf to update"
+when
+    $job: Job( $turfID: turfID , $status: status == "DISPATCHED")
+    $turf: Turf(id == $turfID, $groups: groups)
+    Boolean(booleanValue == true) from $groups.containsKey($status)
+then 
+    //add new group
+    int value = 1;
+    //update the total number of jobs by 1
+    $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() +value);
+    //set the group value
+    Group group = (Group)$groups.get($status);
+    int newValue = group.getValue() + value;
+    group.setValue(newValue);
+    $turf.getGroups().put($status, group);
+
+    //update the data store  and send message to publish
+    Message msg = new Message();
+    msg.add("messages:turfs:jobs", job_pool.save($job));
+    msg.add("messages:turfs", turf_pool.save($turf));
+    insert(msg); 
+
+    //remove from the rules working memory
+    retract($turf);
+    retract($job);
+end
+/*******DISPATCHED -ends *******/
+
+/********* COMPLETE RULE - starts*******************/
+rule "a dispatched job is added,create a turf status group"
+when
+    $job: Job($id: id, $turfID: turfID, $status: status == "COMPLETE")
+    $turf: Turf(id == $turfID, $groups: groups)
+    Boolean(booleanValue == false) from $groups.containsKey($status)
+then 
+    //add new group
+    int value = 1;
+    //update the total number of jobs by 1
+    $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() +value);
+    //set the value
+    $turf.getGroups().put($status,new Group($status,value));
+ 
+   //update the data store  and send message to notifier
+    Message msg = new Message();
+    msg.add("messages:turfs:jobs", job_pool.save($job));
+    msg.add("messages:turfs", turf_pool.save($turf));
+    insert(msg);
+    //remove from memory
+    retract($turf);
+    retract($job);
+end
+
+//rule to add a new job to a turf, and when statistic group is exists
+rule "a COMPLETE job is added, existing group and invoked  a turf to update"
+when
+    $job: Job( $turfID: turfID , $status: status == "COMPLETE")
+    $turf: Turf(id == $turfID, $groups: groups)
+    Boolean(booleanValue == true) from $groups.containsKey($status)
+then 
+    //add new group
+    int value = 1;
+    //update the total number of jobs by 1
+    $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() +value);
+    //set the group value
+    Group group = (Group)$groups.get($status);
+    int newValue = group.getValue() + value;
+    group.setValue(newValue);
+    $turf.getGroups().put($status, group);
+
+    //update the data store  and send message to publish
+    Message msg = new Message();
+    msg.add("messages:turfs:jobs", job_pool.save($job));
+    msg.add("messages:turfs", turf_pool.save($turf));
+    insert(msg); 
+
+    //remove from the rules working memory
+    retract($turf);
+    retract($job);
+end
+/*******COMPLETE -ends *******/
