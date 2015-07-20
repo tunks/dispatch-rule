@@ -20,7 +20,7 @@ then
      //retract($analytic);
      //generate group series and send message
      Message msg = new Message();    
-     msg.add("messages:analytics:turf:series",results);
+     msg.add("messages:analytics:turfs:series",results);
      insert(msg);
 end
 
