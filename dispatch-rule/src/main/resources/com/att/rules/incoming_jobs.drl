@@ -46,9 +46,9 @@ when
                                       $period : duration !=null )
    not Job( id == $id )
 then
+   /** find exist the existing job in the data store and compare with rule's working memory **/
    String key = $turfID.toString();
    String field = $id.toString();
-   //find exist the existing job in the data store and compare with rule's working memory
    Job job = job_pool.find(key,field);
    if(!job.getStatus().equals("COMPLETE") ){
         Turf turf = turf_pool.find(key);
