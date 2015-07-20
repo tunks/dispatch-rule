@@ -20,7 +20,7 @@ then
    System.out.println("System not existing "+$status);
     //update the total number of jobs by 1
    $groups.put($status,new Group($status,value));
-   $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() +value)
+   $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() +value);
     //modify($turf){setTotalNumberOfJobs( $totalNumberOfJobs +value)}  
     //update store and send message to notifier
     Message msg = new Message();
@@ -43,7 +43,7 @@ then
     int newValue = ((Group)$groups.get($status)).getValue() + value;
     ((Group)$groups.get($status)).setValue(newValue);
     //update the total number of jobs by 1
-    $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() +value)
+    $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() + value);
     //modify($turf){ setTotalNumberOfJobs( $totalNumberOfJobs +  value) }
     //update data store  and send message to notifier
     Message msg = new Message();
