@@ -3,8 +3,7 @@ package com.att.rules;
 global  com.att.dispatch.rule.process.BasePool turf_pool
 
 rule "generate turf analyis  every 5 seconds"
-//timer (cron: 0/5 *  *  *  * ? )
-  timer ( int: 5s 10s) 
+timer (cron: 0/10 *  *  *  * ? )
 when
    not Analytic( name == "TURF_GROUP_SERIES")
 then
@@ -16,7 +15,8 @@ end
 rule "generate the group status every 5 seconds"
 timer (cron: 0/5 *  *  *  * ? )
 when
-    Boolean(booleanValue == false) from turf_pool.getAll().isEmpty() 
+    not Analytic( name == "TURF_SERIES")
 then
+    System.out.println("TURF_SERIES");
      insert(new Analytic("TURF_SERIES"));
 end
