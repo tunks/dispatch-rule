@@ -5,8 +5,8 @@ import com.att.dispatch.rule.model.Analytic;
 
 /****  PENDING ****/
 rule "pending job is added " extends "status group does not exists"
-//activation-group "new job status"
-//salience 110
+activation-group "new job status"
+salience 110
 when
     $pending_job: Job($id: id, status == "PENDING")
 then    
@@ -19,8 +19,8 @@ then
 end
 
 rule "a pending job is added - #2" extends "status group exists"
-//activation-group "existing job status"
-//salience 111
+ activation-group "existing job status"
+ salience 111
 when
     $pending_job: Job($id: id, status == "PENDING")
 then 
