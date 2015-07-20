@@ -62,7 +62,7 @@ then
         insert($dispatched_job);
         insert(turf);
     }
-    else if (job.getStatus().equals("COMPLETE")) {
+    else{
         retract($dispatched_job);
     }
 
