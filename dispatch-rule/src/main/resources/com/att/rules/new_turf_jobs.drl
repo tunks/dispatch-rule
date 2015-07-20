@@ -10,7 +10,7 @@ global  com.att.dispatch.rule.process.TurfPool turf_pool
 
 /*********  PENDING RULE - starts here *******************/
 rule "a pending job is added,create a status group"
-no-loop true
+lock-on-active true
 when
     $job: Job($status: status == "PENDING" , $turfID : turfID)
     $turf: Turf(id ==  $turfID , $totalNumberOfJobs: totalNumberOfJobs,  $groups: groups)
@@ -29,7 +29,7 @@ then
 end
 
 rule "a pending job is added, update existing group"
-no-loop true
+lock-on-active true
 when
     $job: Job($turfID : turfID, $status: status == "PENDING")
     $turf: Turf(id == $turfID, $totalNumberOfJobs : totalNumberOfJobs, $groups: groups)
