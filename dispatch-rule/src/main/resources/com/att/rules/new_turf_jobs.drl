@@ -1,55 +1,231 @@
 package com.att.rules;
 
+import java.util.ArrayList;
+
 import com.att.dispatch.rule.model.Turf;
 import com.att.dispatch.rule.model.Job;
-import com.att.dispatch.rule.model.Group;
-import com.att.dispatch.rule.model.Analytic;
+import com.att.dispatch.rule.model.Analytics;
 
 global  com.att.dispatch.rule.process.JobPool job_pool
 global  com.att.dispatch.rule.process.TurfPool turf_pool
 
-/*********  PENDING RULE - starts here *******************/
-rule "a pending job is added,create a status group"
-no-loop true
-when
-    $job: Job( $id: id, $status: status == "PENDING" , $turfID : turfID)
-    $turf: Turf( id ==  $turfID , $totalNumberOfJobs: totalNumberOfJobs,  $groups: groups)
-    Boolean( booleanValue == false) from $groups.containsKey($status)
-then 
-    int value = 1;
-   System.out.println("System not existing "+$status);
-    //update the total number of jobs by 1
-   $groups.put($status,new Group($status,value));
-   $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() +value);
-    //modify($turf){setTotalNumberOfJobs( $totalNumberOfJobs +value)}  
-    //update store and send message to notifier
-    Message msg = new Message();
-    msg.add("messages:turfs:jobs", job_pool.save($job));
-    msg.add("messages:turfs", turf_pool.save($turf));
-    insert(msg);
+declare Job
+  @properChangeSupport
 end
 
-rule "a pending job is added, update existing group"
-no-loop true
+/*********  PENDING RULE - starts here *******************/
+rule "a pending job is added,create a turf status group"
 when
-    $job: Job( $id: id, $turfID : turfID, $status: status == "PENDING")
-    $turf: Turf( id == $turfID, $totalNumberOfJobs : totalNumberOfJobs, $groups: groups)
+    $job: Job($id: id, $status: status == "PENDING")
+    $turf: Turf(id == $, $groups: groups)
+    Boolean(booleanValue == false) from $groups.containsKey($status)
+then 
+    //add new group
+    int value = 1;
+    //update the total number of jobs by 1
+    $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() +value);
+    //set the value
+    $turf.getGroups().put($status,new Group($status,value));
+    //update the data store  and send message to notifier
+    Message msg = new Message();
+    msg.add("messages:turfs:jobs", job_pool.save($job));
+    msg.add("turfs",turf_pool.insert($turf));
+    insert(msg);
+    retract($turf);
+    retract($job);
+end
+
+//rule to add a new job to a turf, and when statistic group is exists
+rule "a pending job is added, existing group and invoked  a turf to update"
+ //salience 11
+when
+    $job: Job($status: status == "PENDING")
+    $turf: Turf(id == $job.getTurfID(), $groups: groups)
     Boolean(booleanValue == true) from $groups.containsKey($status)
 then 
     //add new group
     int value = 1;
-    System.out.println("System existing "+$status);
-    //get the group value
-    int newValue = ((Group)$groups.get($status)).getValue() + value;
-    ((Group)$groups.get($status)).setValue(newValue);
     //update the total number of jobs by 1
-    $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() + value);
-    //modify($turf){ setTotalNumberOfJobs( $totalNumberOfJobs +  value) }
-    //update data store  and send message to notifier
+    $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() +value);
+    //set the value and calculate the perecentage
+    //get the group value
+    Group group = (Group)$groups.get($status);
+    int groupValue = group.getValue(); 
+    int newValue = groupValue + value;
+    //set the new value and percentage
+    group.setValue(newValue);
+    $turf.getGroups().put($status,group);
+    //update the data store 
+    String key = $job.getTurfID().toString();
+    String field = $job.getId().toString();
+    String job_data = job_pool.insert(key,field, $job);
+    String turf_data = turf_pool.insert($turf);
+   
+    //insert analytics on the turfs region data series
+    insert(new Analytics("TURF_REGION_SERIES"));
+    //send message to publish
     Message msg = new Message();
-    msg.add("messages:turfs:jobs", job_pool.save($job));
-    msg.add("messages:turfs", turf_pool.save($turf));
+    msg.insertMessage("jobs", job_data);
+    msg.insertMessage("turfs", turf_data);
     insert(msg); 
+    //remove from the rules working memory
+    retract($turf);
+    retract($job);
+    //TODO...send all pending group to a main group
+    //kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup("notification").setFocus();
+end
+/*******PENDING -ends here *******/
+
+/*** DISPATCH -- starts here **/
+//rule to add a dispatch job to a turf, and bucket or group does not exist , create a new group
+rule "a dispatched job is added, create a group and invoked  a turf to update"
+//lock-on-active
+when
+    $job: Job($status: status == "DISPATCHED")
+    $turf: Turf(id == $job.getTurfID(), $groups: groups)
+    Boolean(booleanValue == false) from $groups.containsKey($status)
+then     
+    //Query overdue = turf_pool.createQuery(new TurfOverDueJobs($job.getTurfID().toString()));
+    //add new group
+    int value = 1;
+    //update the total number of jobs by 1
+    $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() +value);
+    //set the value and calculate the perecentage
+    //add a group name "DISPATCHED"
+    $groups.put($status,new Group($status,value));
+    //update the data store 
+    String key = $job.getTurfID().toString();
+    String field = $job.getId().toString();
+    String job_data = job_pool.insert(key,field, $job);
+    String turf_data = turf_pool.insert($turf);
+   
+    //insert analytics on the turfs region data series
+    insert(new Analytics("TURF_REGION_SERIES"));
+    //send message to publish
+    Message msg = new Message();
+    msg.insertMessage("jobs", job_data);
+    msg.insertMessage("turfs", turf_data);
+    insert(msg); //remove from the rules working memory
+    retract($turf);
+    retract($job);
 end
 
-/*******PENDING  here *******/
+//rule to add a dispatch job to a turf, and bucket or group does not exist , create a new group
+rule "a dispatched job is added,existing group and invoked  a turf to update"
+//lock-on-active
+when
+    $job: Job($status: status == "DISPATCHED")
+    $turf: Turf(id == $job.getTurfID(), $groups: groups)
+    Boolean(booleanValue == true) from $groups.containsKey($status)
+then     
+    //Query overdue = turf_pool.createQuery(new TurfOverDueJobs($job.getTurfID().toString()));
+    int value = 1;
+    //update the total number of jobs by 1
+    $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() +value);
+    //set the value and calculate the perecentage
+    //get the group value
+    Group group = (Group)$groups.get($status);
+    int groupValue = group.getValue(); 
+    int newValue = groupValue + value;
+    //set the new value and percentage
+    group.setValue(newValue);
+    $groups.put($status,group);
+    //update the data store 
+    String key = $job.getTurfID().toString();
+    String field = $job.getId().toString();
+    String job_data = job_pool.insert(key,field, $job);
+    String turf_data = turf_pool.insert($turf);
+    
+     //insert analytics on the turfs region data series
+     insert(new Analytics("TURF_REGION_SERIES"));
+    //remove from the rules working memory
+   // retract($turf);
+    //retract($job);
+    //send message to publish
+    Message msg = new Message();
+    msg.insertMessage("jobs", job_data);
+    msg.insertMessage("turfs", turf_data);
+    insert(msg);
+end
+
+/**DISPATCH END here**/
+
+/*** COMPLETE JOB ****/
+
+//rule to add a complete job to a turf, and bucket or group does not exist , create a new group
+rule "a complete job is added, create a group and invoked  a turf to update"
+//lock-on-active
+when
+    $job: Job($status: status == "COMPLETE")
+    $turf: Turf(id == $job.getTurfID(), $groups: groups)
+    Boolean(booleanValue == false) from $groups.containsKey($status)
+then     
+    //Query overdue = turf_pool.createQuery(new TurfOverDueJobs($job.getTurfID().toString()));
+    //add new group
+    int value = 1;
+    //update the total number of jobs by 1
+    $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() +value);
+    //set the value and calculate the perecentage
+    //add a group name "DISPATCHED"
+    $groups.put($status,new Group($status,value));
+    //update the data store 
+    String key = $job.getTurfID().toString();
+    String field = $job.getId().toString();
+    String job_data = job_pool.insert(key,field, $job);
+    String turf_data = turf_pool.insert($turf);
+   //insert analytics on the turfs region data series
+    insert(new Analytics("TURF_REGION_SERIES"));
+    //remove from the rules working memory
+    //retract($turf);
+    //retract($job);
+    //send message to publish
+    Message msg = new Message();
+    msg.insertMessage("jobs", job_data);
+    msg.insertMessage("turfs", turf_data);
+    insert(msg);
+end
+
+//rule to add a complete job to a turf, and bucket or group exists , then update group
+rule "a job is completed and invoked  a turf to update its status"
+//lock-on-active
+when
+    $job: Job($status: status == "COMPLETE")
+    $turf: Turf(id == $job.getTurfID(), $groups: groups)
+    Boolean(booleanValue == true) from $groups.containsKey($status)
+then 
+    int value = 1;
+    //update the total number of jobs by 1
+    $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() +value);
+    String key = $job.getTurfID().toString();
+    String field = $job.getId().toString();
+    //get the previous job data  
+    //Job prev_job = job_pool.find(key,field);
+    //if(previous !=null){
+      //String prev_status = 
+      //Group group = (Group)$groups.get(status);
+    //}
+    //get the group value
+    Group group = (Group)$groups.get($status);
+    int groupValue = group.getValue(); 
+    int newValue = groupValue + value;
+    //set the new value and percentage
+    group.setValue(newValue);
+    $groups.put($status, group);
+    //update the data store 
+    
+    String job_data = job_pool.insert(key,field, $job);
+    String turf_data = turf_pool.insert($turf);
+    
+    //insert analytics on the turfs region data series
+    insert(new Analytics("TURF_REGION_SERIES"));
+    //remove from the rules working memory
+    //retract($turf);
+    //retract($job);
+    //send message to publish
+    Message msg = new Message();
+    msg.insertMessage("jobs", job_data);
+    msg.insertMessage("turfs", turf_data);
+    insert(msg);
+    //kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup("notification").setFocus();
+end
+//**COMPLETE ENDS ---here***/
