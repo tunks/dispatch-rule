@@ -1,5 +1,6 @@
 package com.att.rules;
 
+import java.util.ArrayList;
 import  com.att.dispatch.rule.model.Analytic;
 
 global  com.att.dispatch.rule.process.BasePool turf_pool
@@ -7,8 +8,12 @@ global  com.att.dispatch.rule.process.BasePool turf_pool
 rule "generate turf analyis  every 5 seconds"
 timer (cron: 0/5 *  *  *  * ? )
 when
+    $turfList: ArrayList(size> 0) from collect
+                                            ( Turf(groups.size()  >0 )
+                                             )
      Boolean(booleanValue == false) from turf_pool.getAll().isEmpty() 
 then
+      System.out.println("turfList"+ $turfList);
      insert(new Analytic("TURF_GROUP_SERIES"));
 end
 
