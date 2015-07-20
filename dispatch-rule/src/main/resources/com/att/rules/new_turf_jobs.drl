@@ -26,7 +26,7 @@ then
     $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() +value);
     //set the value
     $turf.getGroups().put($status,new Group($status,value));
- 
+
    //update the data store  and send message to notifier
     Message msg = new Message();
     msg.add("messages:turfs:jobs", job_pool.save($job));
