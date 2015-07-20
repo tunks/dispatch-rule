@@ -21,7 +21,7 @@ public class JobPool extends BasePool<Job>{
     //insert and returns json string
     @Override
     public String save(Job object) throws DataStoreException{
-         String key = object.getTurfID().toString()
+         String key = object.getTurfID().toString();
          String field = object.getId().toString();
          return save(key,field,object);
     }
