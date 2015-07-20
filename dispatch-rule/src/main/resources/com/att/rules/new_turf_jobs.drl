@@ -3,77 +3,25 @@ package com.att.rules;
 import com.att.dispatch.rule.model.Analytic;
 
 /****  PENDING ****/
-rule "#1- pending job is added " extends "status group does not exists"
+rule "pending job is added " extends "status group does not exists"
+activation-group "new job status"
+salience 110
 when
     $pending_job: Job($id: id, status == "PENDING")
-     //not (exists (Job(id == $id)) )
 then    
     System.out.println(" turf job rule sub -no exist ");
-    //insert analytics on the turfs region data series
-    //insert(new Analytic("TURF_REGION_SERIES"));
     //remove job from the rules working memory
     //retract($pending_job);
 end
 
 rule "a pending job is added - #2" extends "status group exists"
+activation-group "existing job status"
+salience 111
 when
     $pending_job: Job($id: id, status == "PENDING")
-      //not (exists (Job(id == $id)) )
 then 
-    //insert analytics on the turfs region data series
    System.out.println(" turf job rule sub - exist ");
-    //insert(new Analytic("TURF_REGION_SERIES"));
     //remove the facts from working memory
     //retract($pending_job);
 end
 /*******PENDING JOBS *******/
-
-
-/***** DISPATCH JOBS *********/
-rule "a dispatched job is added - #1" extends "status group does not exists"
-when
-    $dispatched_job: Job(status == "DISPATCHED")
-then     
-    //Query overdue = turf_pool.createQuery(new TurfOverDueJobs($job.getTurfID().toString()));
-    //insert analytics on the turfs region data series
-    //insert(new Analytic("TURF_REGION_SERIES"));
-    //remove from the rules working memory
-    //retract( $dispatched_job);
-end
-
-rule "a dispatched job is added - #2" extends "status group exists"
- when
-    $dispatched_job: Job($id: id, status == "DISPATCHED")
-    //not (exists (Job(id == $id)) )
-then     
-   //insert analytics on the turfs region data series
-    //insert(new Analytic("TURF_REGION_SERIES"));
-    //remove from the rules working memory
-    //retract($dispatched_job);
-end
-/**DISPATCH END here**/
-
-
-/*** COMPLETE JOB ****/
-rule "a complete job is added - #1" extends "status group does not exists"
-when
-    $complete_job: Job($id: id, status == "COMPLETE")
-    //not (exists (Job(id == $id)) )
-then     
-    //insert analytics on the turfs region data series
-    //insert(new Analytic("TURF_REGION_SERIES"));   
-    //remove from the rules working memory
-    //retract($complete_job);
-end
-
-rule "a completed job is added - #2" extends "status group exists"
-when
-    $complete_job: Job($id: id, status == "COMPLETE")
-    //not (exists (Job(id == $id)) )
-then 
-    //insert analytics on the turfs region data series
-    //insert(new Analytic("TURF_REGION_SERIES"));
-    //remove from the rules working memory
-    retract($job);
-end
-/**COMPLETE ENDS ---here***/
