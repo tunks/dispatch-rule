@@ -1,2 +1,20 @@
 package com.att.rules;
 
+global  com.att.dispatch.rule.process.BasePool turf_pool
+
+rule "generate turf analyis  every 2 seconds"
+timer (cron: 0/5 *  *  *  * ? )
+when
+     Boolean(booleanValue == false) from turf_pool.getAll().isEmpty() 
+then
+     insert(new Analytic("TURF_GROUP_SERIES"));
+end
+
+
+rule "generate the group status every 5 seconds"
+timer (cron: 0/5 *  *  *  * ? )
+when
+    Boolean(booleanValue == false) from turf_pool.getAll().isEmpty() 
+then
+     insert(new Analytic("TURF_SERIES"));
+end
