@@ -12,6 +12,7 @@ rule "compute and generate turf analytic series"
  when
     $analytic : Analytic( $name: name == "TURF_SERIES")
 then
+    System.out.println("TURF SERIES");
      List turfs = turf_pool.getAll();
      Compute series = ComputeFactory.newAnalysisSeries($name);
      series.compute(turfs);
