@@ -37,8 +37,7 @@ then
     retract($job);
 end
 
-//rule to add a new job to a turf, and when statistic group is exists
-rule "a pending job is added, existing group and invoked  a turf to update"
+rule "a pending job is added, update existing status group"
 when
     $job: Job( $turfID: turfID , $status: status == "PENDING")
     $turf: Turf(id == $turfID, $groups: groups)
@@ -67,7 +66,7 @@ end
 /*******PENDING -ends *******/
 
 /*********  DISPATCHED RULE - starts*******************/
-rule "a dispatched job is added,create a turf status group"
+rule "a dispatched job is added,create turf status group"
 when
     $job: Job($id: id, $turfID: turfID, $status: status == "DISPATCHED")
     $turf: Turf(id == $turfID, $groups: groups)
@@ -90,8 +89,7 @@ then
     retract($job);
 end
 
-//rule to add a new job to a turf, and when statistic group is exists
-rule "a DISPATCHED job is added, existing group and invoked  a turf to update"
+rule "a DISPATCHED job is added, update existing status group"
 when
     $job: Job( $turfID: turfID , $status: status == "DISPATCHED")
     $turf: Turf(id == $turfID, $groups: groups)
@@ -143,8 +141,7 @@ then
     retract($job);
 end
 
-//rule to add a new job to a turf, and when statistic group is exists
-rule "a COMPLETE job is added, existing group and invoked  a turf to update"
+rule "a COMPLETE job is added, update existing status group"
 when
     $job: Job( $turfID: turfID , $status: status == "COMPLETE")
     $turf: Turf(id == $turfID, $groups: groups)
