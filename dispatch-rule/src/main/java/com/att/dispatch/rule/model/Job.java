@@ -12,153 +12,192 @@ import java.util.Objects;
  *
  * @author ebrima
  */
-public class Job implements Serializable {
-    private Long id;
-    private String status;
-    private Long ticketID;
-    private Long turfID;
-    private String turfName;
-    private Long dispatchID;
-    private String startTime;
-    private String endTime;
-    private Long duration;
-    private int zipCode;
-    
-    private String message;
-    private String updatedOn;
-    
-    public String getStatus() {
-        return status;
-    }
+public class Job implements Serializable
+{
+   private Long id;
+   private String status;
+   private Long ticketID;
+   private Long turfID;
+   private String turfName;
+   private Long dispatchID;
+   private String startTime;
+   private String endTime;
+   private Long duration;
+   private int zipCode;
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-    
-    public String getStartTime() {
-        return startTime;
-    }
+   private String message;
+   private String updatedOn;
 
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
-    }
+   private com.att.dispatch.rule.model.Flag flag;
 
-    public String getEndTime() {
-        return endTime;
-    }
+   public String getStatus()
+   {
+      return status;
+   }
 
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
-    }
+   public void setStatus(String status)
+   {
+      this.status = status;
+   }
 
-    public Long getId() {
-        return id;
-    }
+   public String getStartTime()
+   {
+      return startTime;
+   }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+   public void setStartTime(String startTime)
+   {
+      this.startTime = startTime;
+   }
 
-    public Long getTicketID() {
-        return ticketID;
-    }
+   public String getEndTime()
+   {
+      return endTime;
+   }
 
-    public void setTicketID(Long ticketID) {
-        this.ticketID = ticketID;
-    }
+   public void setEndTime(String endTime)
+   {
+      this.endTime = endTime;
+   }
 
-    public Long getDispatchID() {
-        return dispatchID;
-    }
+   public Long getId()
+   {
+      return id;
+   }
 
-    public void setDispatchID(Long dispatchID) {
-        this.dispatchID = dispatchID;
-    }
+   public void setId(Long id)
+   {
+      this.id = id;
+   }
 
-    public Long getDuration() {
-        return duration;
-    }
+   public Long getTicketID()
+   {
+      return ticketID;
+   }
 
-    public void setDuration(Long duration) {
-        this.duration = duration;
-    }
+   public void setTicketID(Long ticketID)
+   {
+      this.ticketID = ticketID;
+   }
 
-    public Long getTurfID() {
-        return turfID;
-    }
+   public Long getDispatchID()
+   {
+      return dispatchID;
+   }
 
-    public void setTurfID(Long turfID) {
-        this.turfID = turfID;
-    }
+   public void setDispatchID(Long dispatchID)
+   {
+      this.dispatchID = dispatchID;
+   }
 
-    public String getMessage() {
-        return message;
-    }
+   public Long getDuration()
+   {
+      return duration;
+   }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+   public void setDuration(Long duration)
+   {
+      this.duration = duration;
+   }
 
-    public String getUpdatedOn() {
-        return updatedOn;
-    }
+   public Long getTurfID()
+   {
+      return turfID;
+   }
 
-    public void setUpdatedOn(String updatedOn) {
-        this.updatedOn = updatedOn;
-    }
-   
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 23 * hash + Objects.hashCode(this.id);
-        hash = 23 * hash + Objects.hashCode(this.ticketID);
-        return hash;
-    }
+   public void setTurfID(Long turfID)
+   {
+      this.turfID = turfID;
+   }
 
-    @Override
-    public boolean equals(Object obj) {
-        if(this == obj)
-            return true;
-        
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        
-        Job other = (Job) obj;
-        if (!this.id.equals(other.id) || !this.ticketID.equals(other.ticketID)) {
-            return false;
-        }
- 
-        return true;
-    }
+   public String getMessage()
+   {
+      return message;
+   }
 
-    public int getZipCode() {
-        return zipCode;
-    }
+   public void setMessage(String message)
+   {
+      this.message = message;
+   }
 
-    public void setZipCode(int zipCode) {
-        this.zipCode = zipCode;
-    }
+   public String getUpdatedOn()
+   {
+      return updatedOn;
+   }
 
-    public String getTurfName() {
-        return turfName;
-    }
+   public void setUpdatedOn(String updatedOn)
+   {
+      this.updatedOn = updatedOn;
+   }
 
-    public void setTurfName(String turfName) {
-        this.turfName = turfName;
-    }
-    
-    @Override
-    public String toString(){
+   public int getZipCode()
+   {
+      return zipCode;
+   }
+
+   public void setZipCode(int zipCode)
+   {
+      this.zipCode = zipCode;
+   }
+
+   public String getTurfName()
+   {
+      return turfName;
+   }
+
+   public void setTurfName(String turfName)
+   {
+      this.turfName = turfName;
+   }
+
+   @Override
+   public String toString()
+   {
       return "{job: {" +
-                   "id:"+id+
-                    ",ticketID: "+ticketID+
-                    ",status:"+status+
-                    ",zipCode:" + zipCode+
-                    ",turfID: "+turfID+
-                    ",startTime: "+startTime+
-                    ",endTime:" +endTime
-                +"}"
-              + "}";
-    }
+            "id:" + id +
+            ",ticketID: " + ticketID +
+            ",status:" + status +
+            ",zipCode:" + zipCode +
+            ",turfID: " + turfID +
+            ",startTime: " + startTime +
+            ",endTime:" + endTime
+            + "}"
+            + "}";
+   }
+
+   public com.att.dispatch.rule.model.Flag getFlag()
+   {
+      return this.flag;
+   }
+
+   public void setFlag(com.att.dispatch.rule.model.Flag flag)
+   {
+      this.flag = flag;
+   }
+
+   public Job()
+   {
+   }
+
+   public Job(java.lang.Long id, java.lang.String status,
+         java.lang.Long ticketID, java.lang.Long turfID,
+         java.lang.String turfName, java.lang.Long dispatchID,
+         java.lang.String startTime, java.lang.String endTime,
+         java.lang.Long duration, int zipCode, java.lang.String message,
+         java.lang.String updatedOn, com.att.dispatch.rule.model.Flag flag)
+   {
+      this.id = id;
+      this.status = status;
+      this.ticketID = ticketID;
+      this.turfID = turfID;
+      this.turfName = turfName;
+      this.dispatchID = dispatchID;
+      this.startTime = startTime;
+      this.endTime = endTime;
+      this.duration = duration;
+      this.zipCode = zipCode;
+      this.message = message;
+      this.updatedOn = updatedOn;
+      this.flag = flag;
+   }
 }
