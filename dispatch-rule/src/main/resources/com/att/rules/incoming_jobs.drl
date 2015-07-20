@@ -9,7 +9,7 @@ global  com.att.dispatch.rule.process.TurfPool turf_pool
 rule "a pending job"
   no-loop true
 when
-   $new_job: Job( $id : id ,  $turfID : turfID , status =="PENDING"  )
+   $new_job: Job( $id : id ,  $turfID : turfID , $status: status =="PENDING"  )
    not (exists (Job(id == $id , status != $status, turfID !=  $turfID )) )
 then
    Turf turf = turf_pool.find( $turfID.toString() );
@@ -22,7 +22,7 @@ end
 rule "a job is dispatched"
 no-loop true
 when
-  $dispatched_job: Job( $id : id , $turfID : turfID, status == "DISPATCHED" )
+  $dispatched_job: Job( $id : id , $turfID : turfID, $status: status == "DISPATCHED" )
    not (exists (Job(id == $id , status != $status, turfID !=  $turfID )) )
 then
    //find the turf in the datastore 
