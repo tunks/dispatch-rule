@@ -30,6 +30,8 @@ public class Job implements Serializable
 
    private com.att.dispatch.rule.model.Flag flag;
 
+   private java.lang.Boolean active;
+
    public String getStatus()
    {
       return status;
@@ -179,12 +181,22 @@ public class Job implements Serializable
    {
    }
 
-   public Job(java.lang.Long id, java.lang.String status,
-         java.lang.Long ticketID, java.lang.Long turfID,
-         java.lang.String turfName, java.lang.Long dispatchID,
-         java.lang.String startTime, java.lang.String endTime,
-         java.lang.Long duration, int zipCode, java.lang.String message,
-         java.lang.String updatedOn, com.att.dispatch.rule.model.Flag flag)
+   public java.lang.Boolean getActive()
+   {
+      return this.active;
+   }
+
+   public void setActive(java.lang.Boolean active)
+   {
+      this.active = active;
+   }
+
+   public Job(java.lang.Long id, java.lang.String status, java.lang.Long ticketID,
+         java.lang.Long turfID, java.lang.String turfName,
+         java.lang.Long dispatchID, java.lang.String startTime,
+         java.lang.String endTime, java.lang.Long duration, int zipCode,
+         java.lang.String message, java.lang.String updatedOn,
+         com.att.dispatch.rule.model.Flag flag, java.lang.Boolean active)
    {
       this.id = id;
       this.status = status;
@@ -199,5 +211,6 @@ public class Job implements Serializable
       this.message = message;
       this.updatedOn = updatedOn;
       this.flag = flag;
+      this.active = active;
    }
 }
