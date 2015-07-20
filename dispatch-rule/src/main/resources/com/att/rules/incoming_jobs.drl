@@ -58,7 +58,7 @@ then
      ){     
         Turf turf = turf_pool.find(key);
         //insert into the turf rule to update the turf
-        $dispatched_job.setFlag( new Flag("RED") );
+        $dispatched_job.setFlag( new Flag("GREEN") );
         insert($dispatched_job);
         insert(turf);
     }
