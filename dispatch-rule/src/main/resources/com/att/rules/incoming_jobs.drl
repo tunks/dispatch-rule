@@ -40,7 +40,7 @@ end
 
 
 rule "a job is dispatched , start time is set and it is not complete"
-   timer(expr: "5s", $duration ; start=$start)
+   timer(expr: "10s", $duration ; start=$start)
 when
    $dispatched_job: Job($id: id, $turfID : turfID,
                                       status == "DISPATCHED", 
