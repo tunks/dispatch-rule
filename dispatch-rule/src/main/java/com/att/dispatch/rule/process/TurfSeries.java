@@ -49,10 +49,12 @@ public class TurfSeries implements Compute<List, String> {
              item.key = key;
              for(Turf turf: list){
                  Group group = turf.getGroups().get(key);
-                 if(group != null){
-                    item.values.add(new Value(turf.getName(),group.getValue())); 
-                 }else{
-                    item.values.add(new Value(turf.getName(),0)); 
+                if(turf.getTotalNumberOfJobs() > 0){
+                    if(group != null){
+                      item.values.add(new Value(turf.getName(),group.getValue())); 
+                    }else{
+                      item.values.add(new Value(turf.getName(),0)); 
+                    }
                  }
              }
              results.add(item);
