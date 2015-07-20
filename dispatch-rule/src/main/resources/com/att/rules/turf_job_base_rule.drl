@@ -28,7 +28,6 @@ then
     insert(msg);
 end
 
-
 rule "status group exists"
 activation-group "existing job status"
 salience 101
