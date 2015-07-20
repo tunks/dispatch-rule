@@ -32,7 +32,10 @@ public class Job implements Serializable
 
    private java.lang.Boolean active;
 
-   public String getStatus()
+  public Job(){
+   active = false;
+  }
+  public String getStatus()
    {
       return status;
    }
