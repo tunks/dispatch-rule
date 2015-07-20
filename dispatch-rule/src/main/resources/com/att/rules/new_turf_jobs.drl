@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.att.dispatch.rule.model.Turf;
 import com.att.dispatch.rule.model.Job;
+import com.att.dispatch.rule.model.Group;
 
 global  com.att.dispatch.rule.process.JobPool job_pool
 global  com.att.dispatch.rule.process.TurfPool turf_pool
@@ -15,8 +16,8 @@ end
 /*********  PENDING RULE - starts here *******************/
 rule "a pending job is added,create a turf status group"
 when
-    $job: Job($id: id, $status: status == "PENDING")
-    $turf: Turf(id == $, $groups: groups)
+    $job: Job($id: id, $turfID: turfID, $status: status == "PENDING")
+    $turf: Turf(id == $turfID, $groups: groups)
     Boolean(booleanValue == false) from $groups.containsKey($status)
 then 
     //add new group
@@ -39,7 +40,7 @@ end
 //rule to add a new job to a turf, and when statistic group is exists
 rule "a pending job is added, existing group and invoked  a turf to update"
 when
-    $job: Job($turfID: turfID , $status: status == "PENDING")
+    $job: Job( $turfID: turfID , $status: status == "PENDING")
     $turf: Turf(id == $turfID, $groups: groups)
     Boolean(booleanValue == true) from $groups.containsKey($status)
 then 
