@@ -18,5 +18,5 @@ timer (cron: 0/5 *  *  *  * ? )
 when
     Boolean(booleanValue == false) from turf_pool.getAll().isEmpty() 
 then
-    ///insert(new Analytic("TURF_SERIES"));
+    insert(new Analytic("TURF_SERIES"));
 end
