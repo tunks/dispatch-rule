@@ -22,8 +22,4 @@ then
    msg.add("messages:turfs", turf_data);
    System.out.println("notifier sending message from new turf");
    insert(msg);
-
-     //analytics
-    insert(new Analytic("TURF_GROUP_SERIES"));
-    insert(new Analytic("TURF_SERIES"));
 end
