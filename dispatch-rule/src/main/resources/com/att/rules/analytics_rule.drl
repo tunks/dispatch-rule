@@ -21,6 +21,7 @@ then
      Message msg = new Message();    
      msg.add("messages:analytics:turfs:series",results);
      insert(msg);
+     retract($analytic);
 end
 
 
