@@ -27,10 +27,6 @@ public class Job implements Serializable {
     private String message;
     private String updatedOn;
     
-    public Job(){
-     //id -- generate a random number
-    }
-    
     public String getStatus() {
         return status;
     }
