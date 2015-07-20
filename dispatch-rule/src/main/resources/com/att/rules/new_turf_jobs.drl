@@ -2,6 +2,7 @@ package com.att.rules;
 
 import com.att.dispatch.rule.model.Turf;
 import com.att.dispatch.rule.model.Job;
+import com.att.dispatch.rule.model.Group;
 import com.att.dispatch.rule.model.Analytic;
 
 global  com.att.dispatch.rule.process.JobPool job_pool
