@@ -5,11 +5,6 @@ import com.att.dispatch.rule.model.Message;
 
 global  com.att.dispatch.rule.process.BasePool turf_pool
 
-/**
- *
- * @author ebrima
-  Turf rules
- */
 rule "a turf is added" 
 //no-loop true
 when
