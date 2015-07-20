@@ -6,10 +6,10 @@ import com.att.dispatch.rule.model.Message;
 global  com.att.dispatch.rule.process.BasePool turf_pool
 
 rule "a turf is added" 
-//no-loop true
+no-loop true
 when
-   $turf : Turf(active == false)
-    not (exists Turf( id ==  $turf.getId() ) )
+   $turf : Turf($id: id, active == false)
+    not  Turf( id ==  $id ) 
 then
   //update the store and send message
    modify($turf){ setActive(true) }
