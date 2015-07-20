@@ -4,7 +4,7 @@ import com.att.dispatch.rule.model.Message;
 import com.att.dispatch.rule.model.Analytic;
 
 /****  PENDING ****/
-rule "pending job is added " //extends "status group does not exists"
+rule "pending job is added " extends "status group does not exists"
 //activation-group "new job status"
 //salience 110
 when
