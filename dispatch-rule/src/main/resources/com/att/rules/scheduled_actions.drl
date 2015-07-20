@@ -5,8 +5,7 @@ import  com.att.dispatch.rule.model.Analytic;
 global  com.att.dispatch.rule.process.BasePool turf_pool
 
 rule "generate turf analyis  every 5 seconds"
-//timer (cron: 0/5 *  *  *  * ? )
- timer (  int: 5s)
+timer (cron: 0/5 *  *  *  * ? )
 when
      Boolean(booleanValue == false) from turf_pool.getAll().isEmpty() 
 then
