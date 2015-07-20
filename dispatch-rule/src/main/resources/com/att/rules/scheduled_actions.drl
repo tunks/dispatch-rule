@@ -4,7 +4,7 @@ global  com.att.dispatch.rule.process.BasePool turf_pool
 
 rule "generate turf analyis  every 5 seconds"
 //timer (cron: 0/5 *  *  *  * ? )
-  timer ( int: 5s 5s) 
+  timer ( int: 5s 10s) 
 when
    not Analytic( name == "TURF_GROUP_SERIES")
 then
