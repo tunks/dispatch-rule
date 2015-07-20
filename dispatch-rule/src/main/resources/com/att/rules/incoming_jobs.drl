@@ -2,6 +2,7 @@ package com.att.rules;
 
 import java.util.ArrayList;
 import com.att.dispatch.rule.model.Turf;
+import com.att.dispatch.rule.model.Group;
 import com.att.dispatch.rule.model.Job;
 import com.att.dispatch.rule.model.Flag;
 import com.att.dispatch.rule.model.Message;
@@ -54,14 +55,28 @@ then
    Job job = job_pool.find($dispatched_job);
    /**  time difference current time to start time in minutes **/
    int difference = RuleHelper.currentTimeDifferent($start);
-   if( difference > $duration && 
-      ( job!= null && !job.getStatus().equals("COMPLETE") )
-     ){     
-        // Turf turf = turf_pool.find(key);
-        //insert into the turf rule to update the turf
-        $dispatched_job.setFlag( new Flag("GREEN") );
-         Message msg = new Message();
-         msg.add("messages:jobs", job_pool.save($dispatched_job));
+   if( difference > $duration && ( job!= null && !job.getStatus().equals("COMPLETE")) )
+   {     
+            if( !job.getActive() ) {	
+                int value = 1;
+                Turf turf = turf_pool.find(key);
+                if( turf.getGroups().containsKey("OVERDUE") )
+                 {
+                     int newValue = (turf.getGroups().get("OVERDUE")).getValue() + value;
+                     (turf.getGroups().get("OVERDUE")).setValue(newValue);
+                 }
+              else{
+                     turf.getGroups().put("OVERDUE", new Group("OVERDUE", value));
+                }
+        
+            //insert into the turf rule to update the turf
+             $dispatched_job.setFlag( new Flag("GREEN") );
+             $dispatched_job.setActive(true);
+             Message message = new Message();
+             message.add("messages:jobs", job_pool.save($dispatched_job));
+             message.add("messages:turfs", turf_pool.save(turf));
+             insert(message);
+          }
     }
     else{
         retract($dispatched_job);
