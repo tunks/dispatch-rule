@@ -14,11 +14,8 @@ import java.util.Date;
  * @author ebrima
  */
 public class TurfStatus implements Serializable{
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private Long id;
+    private static final long serialVersionUID = 1L;
+    private Long id;
     private Long turfID;
     private String timestamp; 
     private int numberOfJobs;
