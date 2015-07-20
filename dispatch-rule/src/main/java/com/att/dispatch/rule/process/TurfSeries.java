@@ -40,7 +40,7 @@ public class TurfSeries implements Compute<List, String> {
         //generate keys
         while (turfs.hasNext()) {
             Turf turf = turfs.next();
-            keys = generateKeys(keys, turf);
+            keys.addAll(generateKeys(keys, turf));
         }
         
         //generate series
@@ -58,16 +58,20 @@ public class TurfSeries implements Compute<List, String> {
              results.add(item);
         }    
     }
-   
-   private List generateKeys(List<String> keys, Turf turf){ 
+
+  private List<String> generateKeys(List<String> keys, Turf turf){ 
         int size = keys.size();
+        List<String> list = new ArrayList();
         for(int i= 0; i< size; i++){
-           String key = keys.get(i);
-           if(!turf.getGroups().containsKey(key)){
-               keys.add(key);
-           }
+            Iterator<String> iter = turf.getGroups().keySet().iterator();
+            while(iter.hasNext()){
+              String key = iter.next();
+              if(!keys.contains(key)){
+                  list.add(key);
+              }
+            }
          }
-        return keys;
+        return list;
     }
 
     /* returns the computation results */
