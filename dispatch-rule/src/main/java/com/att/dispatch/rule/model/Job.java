@@ -180,10 +180,6 @@ public class Job implements Serializable
       this.flag = flag;
    }
 
-   public Job()
-   {
-   }
-
    public java.lang.Boolean getActive()
    {
       return this.active;
