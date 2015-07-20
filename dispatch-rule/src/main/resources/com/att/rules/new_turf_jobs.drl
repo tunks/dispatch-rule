@@ -11,17 +11,16 @@ global  com.att.dispatch.rule.process.TurfPool turf_pool
 rule "a pending job is added,create a status group"
 when
     $job: Job($status: status == "PENDING" , $turfID : turfID)
-    $turf: Turf(id ==  $turfID , $groups: groups)
+    $turf: Turf(id ==  $turfID , $totalNumberOfJobs: totalNumberOfJobs,  $groups: groups)
     Boolean(booleanValue == false) from $groups.containsKey($status)
 then 
     int value = 1;
     //update the total number of jobs by 1
-    $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() +value);
-    $turf.getGroups().put($status,new Group($status,value));
-    //update store
-    //send message to notifier
+    $groups.put($status,new Group($status,value));
+     modify($turf){setTotalNumberOfJobs( $totalNumberOfJobs +value)}  
+    //update store and send message to notifier
     Message msg = new Message();
     msg.add("messages:turfs:jobs", job_pool.save($job));
-    msg.add("turfs", turf_pool.save($turf));
+    msg.add("messages:turfs", turf_pool.save($turf));
     insert(msg);
 end
