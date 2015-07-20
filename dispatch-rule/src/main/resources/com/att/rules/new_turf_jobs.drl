@@ -1,5 +1,6 @@
 package com.att.rules;
 
+import com.att.dispatch.rule.model.Message;
 import com.att.dispatch.rule.model.Analytic;
 
 /****  PENDING ****/
@@ -9,8 +10,11 @@ rule "pending job is added " //extends "status group does not exists"
 when
     $pending_job: Job($id: id, status == "PENDING")
 then    
-    System.out.println(" turf job rule sub -no exist ");
-    //remove job from the rules working memory
+     System.out.println(" turf job rule sub -no exist ");
+     //remove job from the rules working memory
+     Message message = new Message();
+     message.add("messages:turfs:jobs", job_pool.save($pending_job));
+     insert(message);
     //retract($pending_job);
 end
 
