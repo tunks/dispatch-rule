@@ -13,7 +13,7 @@ rule "status group does not exists"
 activation-group "new job status"
 salience 100
 when
-    $job: Job($turfID: turfID)
+    $job: Job($turfID: turfID, $status: status)
     $turf: Turf(id == $turfID, $groups: groups)
     Boolean(booleanValue == false) from $groups.containsKey($status)
 then
