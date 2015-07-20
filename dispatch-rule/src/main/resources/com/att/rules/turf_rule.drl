@@ -16,4 +16,5 @@ then
    Message msg = new Message();
    msg.add("messages:turfs", turf_pool.save($turf));
    insert(msg);
+   System.out.println("adding turf");
 end
