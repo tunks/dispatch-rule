@@ -3,6 +3,9 @@ package com.att.rules;
 import java.util.ArrayList;
 import com.att.dispatch.rule.model.Turf;
 import com.att.dispatch.rule.model.Job;
+import com.att.dispatch.rule.process.JobPool;
+import com.att.dispatch.rule.process.TurfPool;
+import com.att.dispatch.rule.process.RuleHelper;
 
 global  com.att.dispatch.rule.process.JobPool job_pool
 global  com.att.dispatch.rule.process.TurfPool turf_pool
@@ -38,29 +41,31 @@ end
 
 
 rule "a job is dispatched , start time is set and it is not complete"
-   timer(expr: "5s", $period ; start=$start)
+   timer(expr: "5s", $duration ; start=$start)
 when
    $dispatched_job: Job($id: id, $turfID : turfID,
                                       status == "DISPATCHED", 
                                       $start : startTime != null, 
-                                      $period : duration !=null )
+                                      $duration : duration !=null )
    not Job( id == $id )
 then
    /** find exist the existing job in the data store and compare with rule's working memory **/
    String key = $turfID.toString();
    String field = $id.toString();
    Job job = job_pool.find(key,field);
-   if(!job.getStatus().equals("COMPLETE") ){
-       //difference in minutes
-   //    int difference = RuleHelper.currentTimeDifferent($start);
+   /**  time difference current time to start time in minutes **/
+   int difference = RuleHelper.currentTimeDifferent($start);
+   if( difference > $duration ){
+        
         Turf turf = turf_pool.find(key);
         //insert into the turf rule to update the turf
         insert($dispatched_job);
         insert(turf);
     }
-    else{
-       retract($dispatched_job);
+    else if (job.getStatus().equals("COMPLETE")) {
+        retract($dispatched_job);
     }
+
 end
 
 
