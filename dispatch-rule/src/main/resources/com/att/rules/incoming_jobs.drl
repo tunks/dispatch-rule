@@ -33,7 +33,6 @@ then
    String key = $turfID.toString(); 
    Turf turf = turf_pool.find(key);
    //set the turf name on the job
-   $dispatched_job.setActive(true);
    $dispatched_job.setTurfName(turf.getName());
    update($dispatched_job);
    insert(turf);
@@ -43,11 +42,10 @@ end
 rule "a job is dispatched , start time is set and it is not complete"
    timer(expr: "10s", $duration ; start=$start)
 when
-   $dispatched_job: Job($id: id, $turfID : turfID,
-                                      status == "DISPATCHED", 
-                                      $start : startTime != null, 
-                                      $duration : duration !=null, 
-                                      active == true )
+   $dispatched_job: Job( $id: id, $turfID : turfID,
+                                        status == "DISPATCHED", 
+                                        $start : startTime != null, 
+                                        $duration : duration !=null )
 then
    /** find exist the existing job in  data store and compare with rule's working memory **/
    String key = $turfID.toString();
