@@ -39,4 +39,5 @@ then
      Message msg = new Message();
      msg.add("messages:analytics:turfs:groups",results);
      insert(msg);
+    retract($analytic);
 end
