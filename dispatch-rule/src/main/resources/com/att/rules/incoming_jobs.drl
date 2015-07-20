@@ -1,2 +1,44 @@
+/**
+ *
+ * @author ebrima
+ */
+
 package com.att.rules;
+
+import com.att.dispatch.model.Turf;
+import com.att.dispatch.model.Job;
+
+global  com.att.dispatch.rule.process.JobPool job_pool
+global  com.att.dispatch.rule.process.TurfPool turf_pool
+//dialect "mvel"
+
+declare Job
+  @properChangeSupport
+end
+
+
+rule "a pending job"
+  no-loop true
+when
+   $new_job: Job( status =="PENDING" , $turfID == turfID )
+then
+   Turf turf = turf_pool.find( $turfID.toString() );
+   $new_job.setTurfName(turf.getName());
+   //insert new job into the turf rule to update the turf
+   update($new_job);
+   insert(turf);
+end
+
+
+rule "a job is dispatched"
+no-loop true
+when
+  $dispatched_job: Job(status == "DISPATCHED" ,$turfID == turfID)
+then
+   //find the turf in the datastore 
+   Turf turf = turf_pool.find( $turfID().toString() );
+   //pass facts to the turf rules
+   modify($dispatched_job){ setTurfName(turf.getName()) }
+   insert(turf);
+end
 
