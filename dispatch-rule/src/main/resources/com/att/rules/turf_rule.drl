@@ -9,17 +9,11 @@ rule "a turf is added"
 //no-loop true
 when
    $turf : Turf(active == false)
-    //not (exists Turf( id ==  $turf.getId() ) )
+    not (exists Turf( id ==  $turf.getId() ) )
 then
-  //store  the new turf to the datastore and get the json data
-   //publish notification message
-   System.out.println("rule turf 3");
-   //set active to true
+  //update the store and send message
    modify($turf){ setActive(true) }
-   String turf_data = turf_pool.save($turf);
-   System.out.println("Turf data"+turf_data);
    Message msg = new Message();
-   msg.add("messages:turfs", turf_data);
-   System.out.println("notifier sending message from new turf");
+   msg.add("messages:turfs", turf_pool.save($turf));
    insert(msg);
 end
