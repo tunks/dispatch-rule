@@ -51,6 +51,8 @@ then
    String field = $id.toString();
    Job job = job_pool.find(key,field);
    if(!job.getStatus().equals("COMPLETE") ){
+       //difference in minutes
+   //    int difference = RuleHelper.currentTimeDifferent($start);
         Turf turf = turf_pool.find(key);
         //insert into the turf rule to update the turf
         insert($dispatched_job);
