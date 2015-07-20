@@ -25,3 +25,25 @@ then
     msg.add("messages:turfs", turf_pool.save($turf));
     insert(msg);
 end
+
+rule "a pending job is added, update existing group"
+when
+    $job: Job($turfID : turfID, $status: status == "PENDING")
+    $turf: Turf(id == $turfID, $totalNumberOfJobs : totalNumberOfJobs, $groups: groups)
+    Boolean(booleanValue == true) from $groups.containsKey($status)
+then 
+    //add new group
+    int value = 1;
+    //get the group value
+    int newValue = ((Group)$groups.get($status)).getValue() + value;
+    ((Group)$groups.get($status)).setValue(newValue);
+    //update the total number of jobs by 1
+    modify($turf){ setTotalNumberOfJobs( $totalNumberOfJobs +value) }
+    //update data store  and send message to notifier
+    Message msg = new Message();
+    msg.add("messages:turfs:jobs", job_pool.save($job));
+    msg.add("messages:turfs", turf_pool.save($turf));
+    insert(msg); 
+end
+
+/*******PENDING -ends here *******/
