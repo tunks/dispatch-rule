@@ -16,6 +16,7 @@ when
     Boolean(booleanValue == false) from $groups.containsKey($status)
 then 
     int value = 1;
+   System.out.println("System not existing "+$status);
     //update the total number of jobs by 1
     $groups.put($status,new Group($status,value));
      modify($turf){setTotalNumberOfJobs( $totalNumberOfJobs +value)}  
@@ -34,6 +35,7 @@ when
 then 
     //add new group
     int value = 1;
+    System.out.println("System existing "+$status);
     //get the group value
     int newValue = ((Group)$groups.get($status)).getValue() + value;
     ((Group)$groups.get($status)).setValue(newValue);
