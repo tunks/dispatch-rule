@@ -91,9 +91,6 @@ then
     msg.add("messages:turfs:jobs", job_pool.save($job));
     msg.add("messages:turfs", turf_pool.save($turf));
     insert(msg);
-    //remove from memory
-    //retract($turf);
-    //retract($job);
 
      //analytics
     insert(new Analytic("TURF_GROUP_SERIES"));
@@ -121,10 +118,6 @@ then
     msg.add("messages:turfs:jobs", job_pool.save($job));
     msg.add("messages:turfs", turf_pool.save($turf));
     insert(msg); 
-
-    //remove from the rules working memory
-    //retract($turf);
-    //retract($job);
 
      //analytics
     insert(new Analytic("TURF_GROUP_SERIES"));
