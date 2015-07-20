@@ -6,10 +6,10 @@ rule "generate turf analyis  every 5 seconds"
 //timer (cron: 0/5 *  *  *  * ? )
   timer ( int: 5s 5s) 
 when
-     Boolean(booleanValue == false) from turf_pool.getAll().isEmpty() 
+   not Analytic( name == "TURF_GROUP_SERIES")
 then
-       System.out.println("TURF_GROUP_SERIES");
-     //insert(new Analytic("TURF_GROUP_SERIES"));
+    System.out.println("TURF_GROUP_SERIES");
+    insert(new Analytic("TURF_GROUP_SERIES"));
 end
 
 
