@@ -1,33 +1,27 @@
 package com.att.rules;
 
-import com.att.dispatch.rule.model.Message;
+import com.att.dispatch.rule.model.Turf;
+import com.att.dispatch.rule.model.Job;
 import com.att.dispatch.rule.model.Analytic;
 
-/****  PENDING ****/
-rule "pending job is added " extends "status group does not exists"
-lock-on-active true
-activation-group "new job status"
-salience 110
-when
-    $pending_job: Job($id: id, status == "PENDING")
-then    
-     System.out.println(" turf job rule sub -no exist ");
-     //remove job from the rules working memory
-     Message message = new Message();
-     message.add("messages:turfs:jobs", job_pool.save($pending_job));
-     insert(message);
-    //retract($pending_job);
-end
+global  com.att.dispatch.rule.process.JobPool job_pool
+global  com.att.dispatch.rule.process.TurfPool turf_pool
 
-rule "a pending job is added - #2" extends "status group exists"
- lock-on-active true
- activation-group "existing job status"
- salience 111
+/*********  PENDING RULE - starts here *******************/
+rule "a pending job is added,create a status group"
 when
-    $pending_job: Job($id: id, status == "PENDING")
+    $job: Job($status: status == "PENDING" , $turfID : turfID)
+    $turf: Turf(id ==  $turfID , $groups: groups)
+    Boolean(booleanValue == false) from $groups.containsKey($status)
 then 
-   System.out.println(" turf job rule sub - exist ");
-    //remove the facts from working memory
-    //retract($pending_job);
+    int value = 1;
+    //update the total number of jobs by 1
+    $turf.setTotalNumberOfJobs( $turf.getTotalNumberOfJobs() +value);
+    $turf.getGroups().put($status,new Group($status,value));
+    //update store
+    //send message to notifier
+    Message msg = new Message();
+    msg.add("messages:turfs:jobs", job_pool.save($job));
+    msg.add("turfs", turf_pool.save($turf));
+    insert(msg);
 end
-/*******PENDING JOBS *******/
