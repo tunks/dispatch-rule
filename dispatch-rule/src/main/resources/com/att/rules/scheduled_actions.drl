@@ -9,14 +9,5 @@ when
 then
     System.out.println("TURF_GROUP_SERIES");
     insert(new Analytic("TURF_GROUP_SERIES"));
-end
-
-
-rule "generate the group status every 5 seconds"
-timer (cron: 0/5 *  *  *  * ? )
-when
-    not Analytic( name == "TURF_SERIES")
-then
-    System.out.println("TURF_SERIES");
      insert(new Analytic("TURF_SERIES"));
 end
