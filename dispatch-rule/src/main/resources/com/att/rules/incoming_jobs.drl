@@ -1,5 +1,6 @@
 package com.att.rules;
 
+import java.util.ArrayList;
 import com.att.dispatch.rule.model.Turf;
 import com.att.dispatch.rule.model.Job;
 
@@ -9,26 +10,66 @@ global  com.att.dispatch.rule.process.TurfPool turf_pool
 rule "a pending job"
   no-loop true
 when
-   $new_job: Job( $id : id ,  $turfID : turfID , $status: status =="PENDING"  )
-    not (exists (Job(id == $id )) )
+   $new_job: Job($turfID : turfID, status =="PENDING" )
 then
-   System.out.println("pendinggggggggggggg");
-   Turf turf = turf_pool.find( $turfID.toString() );
+   String key = $turfID.toString();
+   Turf turf = turf_pool.find(key);
+   //set the turf name on the job
+   $new_job.setTurfName(turf.getName());
    //insert new job into the turf rule to update the turf
-   modify($new_job){ setTurfName(turf.getName()) }
+   insert($new_job);
    insert(turf);
 end
 
 
 rule "a job is dispatched"
-no-loop true
+//lock-on-active true
 when
-  $dispatched_job: Job( $id : id , $turfID : turfID, $status: status == "DISPATCHED" )
-   not (exists (Job(id == $id , status != $status, turfID !=  $turfID )) )
+  $dispatched_job: Job($turfID : turfID, status == "DISPATCHED")
+then
+   //find the turf in the datastore
+   String key = $turfID.toString(); 
+   Turf turf = turf_pool.find(key);
+   //set the turf name on the job
+   $dispatched_job.setTurfName(turf.getName());
+   insert($dispatched_job);
+   insert(turf);
+end
+
+
+rule "a job is dispatched , start time is set and it is not complete"
+   timer(expr: "5s", $period ; start=$start)
+when
+   $dispatched_job: Job($id: id, $turfID : turfID,
+                                      status == "DISPATCHED", 
+                                      $start : startTime != null, 
+                                      $period : duration !=null )
+   not Job( id == $id )
+then
+   String key = $turfID.toString();
+   String field = $id.toString();
+   //find exist the existing job in the data store and compare with rule's working memory
+   Job job = job_pool.find(key,field);
+   if(!job.getStatus().equals("COMPLETE") ){
+        Turf turf = turf_pool.find(key);
+        //insert into the turf rule to update the turf
+        insert($dispatched_job);
+        insert(turf);
+    }
+    else{
+       retract($dispatched_job);
+    }
+end
+
+
+rule "a job is complete"
+when
+   $complete_job: Job($turfID : turfID, status == "COMPLETE")
 then
    //find the turf in the datastore 
-   Turf turf = turf_pool.find( $turfID.toString() );
-   //pass facts to the turf rules
-   modify($dispatched_job){ setTurfName(turf.getName()) }
+   String key = $turfID.toString();
+   Turf turf = turf_pool.find(key);
+   $complete_job.setTurfName(turf.getName());
    insert(turf);
+   insert($complete_job);
 end
