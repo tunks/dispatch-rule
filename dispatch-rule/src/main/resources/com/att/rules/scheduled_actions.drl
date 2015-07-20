@@ -5,7 +5,7 @@ global  com.att.dispatch.rule.process.BasePool turf_pool
 rule "generate turf analyis  every 5 seconds"
 timer (cron: 0/10 *  *  *  * ? )
 when
-   not Analytic( name == "TURF_GROUP_SERIES")
+   //not Analytic( name == "TURF_GROUP_SERIES")
 then
     System.out.println("TURF_GROUP_SERIES");
     insert(new Analytic("TURF_GROUP_SERIES"));
