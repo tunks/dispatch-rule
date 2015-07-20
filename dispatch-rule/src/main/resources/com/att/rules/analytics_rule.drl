@@ -26,7 +26,6 @@ end
 
 
 rule "compute and generate group statistics"
-  timer (cron: 0/5 *  *  *  * ? )
   no-loop true
 when
     $analytic : Analytic( $name: name == "TURF_GROUP_SERIES")
