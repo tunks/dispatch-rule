@@ -13,16 +13,14 @@ rule "compute and generate turf analytic series"
 when
     $analytic : Analytic( $name: name == "TURF_SERIES")
 then
-    List turfs = turf_pool.getAll();
-      Compute series = ComputeFactory.newAnalysisSeries($name);
-      //get all turfs
-      series.compute(turfs);
-      String results = (String)series.getResults();
-      //generate group series
-      //insert message to send message
-      Message msg = new Message();    
-      msg.add("messages:analytics:turfs:series",results);
-      insert(msg);
+     List turfs = turf_pool.getAll();
+     Compute series = ComputeFactory.newAnalysisSeries($name);
+     series.compute(turfs);
+     String results = (String)series.getResults();
+     //generate group series and send message
+     Message msg = new Message();    
+     msg.add("messages:analytics:turfs:series",results);
+     insert(msg);
 end
 
 
@@ -31,15 +29,13 @@ no-loop true
 when
     $analytic : Analytic( $name: name == "TURF_GROUP_SERIES")
 then
-   //get all turfs
     List turfs = turf_pool.getAll();
-        Compute series = ComputeFactory.newAnalysisSeries($name);
-        series.compute(turfs);
-        String results = (String)series.getResults();
-        $analytic.setResults(results);
-       
-        //message to send
-        Message msg = new Message();
-        msg.add("messages:analytics:turfs:groups",results);
-        insert(msg);
+    Compute series = ComputeFactory.newAnalysisSeries($name);
+    series.compute(turfs);
+    String results = (String)series.getResults();
+    //$analytic.setResults(results);
+     //generate series and send message
+     Message msg = new Message();
+     msg.add("messages:analytics:turfs:groups",results);
+     insert(msg);
 end
