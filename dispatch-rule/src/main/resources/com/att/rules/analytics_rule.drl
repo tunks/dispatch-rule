@@ -38,4 +38,5 @@ then
      Message msg = new Message();
      msg.add("messages:analytics:turfs:groups",results);
      insert(msg);
+     insert( new Analytic("TURF_SERIES"));
 end
