@@ -29,16 +29,45 @@ public class TurfSeries implements Compute<List, String> {
     public TurfSeries() {
         results = new ArrayList();
     }
+    
     /* performs the computation*/
     @Override
     public void compute(List object) {
         List<Turf> list = object;
+        List<String> keys = new ArrayList();
         Iterator<Turf> turfs = list.iterator();
+        
+        //generate keys
         while (turfs.hasNext()) {
             Turf turf = turfs.next();
-            List<Series> series = generateSeries(turf);
-            insertSeries(series);
+            keys = generateKeys(keys, turf);
         }
+        
+        //generate series
+        for(String key : keys){
+            Series item = new Series();
+             item.key = key;
+             for(Turf turf: list){
+                 Group group = turf.getGroups().get(key);
+                 if(group != null){
+                     item.values.add(new Value(turf.getName(),group.getValue())); 
+                 }else{
+                    item.values.add(new Value(turf.getName(),0)); 
+                 }
+             }
+             results.add(item);
+        }    
+    }
+   
+   private List generateKeys(List<String> keys, Turf turf){ 
+        int size = keys.size();
+        for(int i= 0; i< size; i++){
+           String key = keys.get(i);
+           if(!turf.getGroups().containsKey(key)){
+               keys.add(key);
+           }
+         }
+        return keys;
     }
 
     /* returns the computation results */
@@ -51,69 +80,6 @@ public class TurfSeries implements Compute<List, String> {
         return RuleHelper.objectToJson(results);
     }
    
-    private List<Series> generateSeries(Turf turf) {
-        List<Series> list = new ArrayList();
-        Map<String, Group> groups = turf.getGroups();
-        Iterator<Group> itr = groups.values().iterator();
-        while (itr.hasNext()) {
-            Series series = new Series();
-            Group group = itr.next();
-            series.key = group.getName();
-            //values
-            Value value = new Value(turf.getName(), group.getValue());
-            series.values.add(value);
-            list.add(series);
-        }
-
-        return list;
-    }
-
-    private void insertSeries(List<Series> series) {
-        for (int index = 0; index < series.size(); index++) {
-            Series item = series.get(index);
-            boolean found = false;
-            for (int k = 0; k < results.size(); k++) {
-                List<Value> itemValue = item.values;
-                List<Value> resultValue = results.get(k).values;
-                String xxValue = itemValue.get(0).x;
-                int yValue = itemValue.get(0).y;
-                if (item.key.equals(results.get(k).key)) {
-                    int vIndex = valueFoundIndex(resultValue, xxValue);
-                    int vSize = resultValue.size();
-                    if (vIndex >= 0 && vIndex < vSize-1) {
-                        results.get(k).values.get(index).y = yValue;
-                    } else {
-                        results.get(k).values.add(new Value(xxValue, yValue));
-                    }
-                    found = true;
-                } else {
-                    //if value type is not found, then add series to zero
-                    if (valueFoundIndex(resultValue, xxValue) == -1) {
-                        int yyyValue = 0;
-                        results.get(k).values.add(new Value(xxValue, yyyValue));
-                    }
-                }
-            }
-            
-          if (results.size() > 0 && !found) {
-              for(int i = 0; i< results.size(); i++){
-                List<Value> values = results.get(i).values;
-                String rKey = results.get(i).key;
-                for (int j = 0; j < values.size(); j++) {
-                    String xVal = values.get(j).x;
-                    if (!item.key.equals(rKey) && (valueFoundIndex(item.values, xVal) == -1) ) {
-                        int yVal = 0;
-                        item.values.add(new Value(xVal, yVal));
-                    }
-                }
-              }
-            }
-          
-            if ( !found) {
-                results.add(0,item);
-            }
-        }
-    }
 
     private int valueFoundIndex(List<Value> values, String xValue) {
         for (int i = 0; i < values.size(); i++) {
