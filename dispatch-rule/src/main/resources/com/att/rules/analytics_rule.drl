@@ -9,8 +9,7 @@ import com.att.dispatch.rule.process.ComputeFactory;
 global  com.att.dispatch.rule.process.TurfPool turf_pool
 
 rule "compute and generate turf analytic series"
-  lock-on-active true
-when
+ when
     $analytic : Analytic( $name: name == "TURF_SERIES")
 then
      List turfs = turf_pool.getAll();
@@ -26,7 +25,6 @@ end
 
 
 rule "compute and generate group statistics"
-  lock-on-active true
 when
     $analytic : Analytic( $name: name == "TURF_GROUP_SERIES")
 then
