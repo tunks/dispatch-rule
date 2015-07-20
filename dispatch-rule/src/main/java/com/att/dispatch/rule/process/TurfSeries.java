@@ -60,16 +60,13 @@ public class TurfSeries implements Compute<List, String> {
     }
 
   private List<String> generateKeys(List<String> keys, Turf turf){ 
-        int size = keys.size();
-        List<String> list = new ArrayList();
-        for(int i= 0; i< size; i++){
-            Iterator<String> iter = turf.getGroups().keySet().iterator();
-            while(iter.hasNext()){
+         List<String> list = new ArrayList();
+         Iterator<String> iter = turf.getGroups().keySet().iterator();
+         while(iter.hasNext()){
               String key = iter.next();
               if(!keys.contains(key)){
                   list.add(key);
-              }
-            }
+              }          
          }
         return list;
     }
