@@ -5,6 +5,7 @@ import com.att.dispatch.rule.model.Analytic;
 
 /****  PENDING ****/
 rule "pending job is added " extends "status group does not exists"
+lock-on-active true
 activation-group "new job status"
 salience 110
 when
@@ -19,6 +20,7 @@ then
 end
 
 rule "a pending job is added - #2" extends "status group exists"
+ lock-on-active true
  activation-group "existing job status"
  salience 111
 when
