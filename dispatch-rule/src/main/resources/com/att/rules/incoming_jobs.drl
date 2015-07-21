@@ -16,6 +16,8 @@ rule "a pending job"
   no-loop true
 when
    $new_job: Job( $id: id, $turfID : turfID, status =="PENDING" )
+   //exists(Job object, String status)
+    job_pool.exists($new_job)
 then
    String key = $turfID.toString();
    Turf turf = turf_pool.find(key);
