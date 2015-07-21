@@ -15,51 +15,52 @@ global  com.att.dispatch.rule.process.TurfPool turf_pool
 rule "a pending job"
   no-loop true
 when
-   $new_job: Job( $id: id, $turfID : turfID, status =="PENDING" )
-   //exists(Job object, String status)
-    job_pool.exists($new_job)
+    $job: Job( $id: id, $turfID : turfID, status =="PENDING" )
+    Boolean(booleanValue == false) from job_pool.exists($job)
 then
-   String key = $turfID.toString();
-   Turf turf = turf_pool.find(key);
-   //set the turf name on the job
-   $new_job.setTurfName(turf.getName());
-   //insert new job into the turf rule to update the turf
-   insert($new_job);
-   insert(turf);
+    String key = $turfID.toString();
+    Turf turf = turf_pool.find(key);
+    //set the turf name on the job
+    $job.setTurfName(turf.getName());
+    //insert new job into the turf rule to update the turf
+    insert($job);
+    insert(turf);
 end
 
 
 rule "a job is dispatched"
 no-loop true
 when
-  $dispatched_job: Job($turfID : turfID, status == "DISPATCHED")
+     $job: Job($turfID : turfID, status == "DISPATCHED")
+     Boolean(booleanValue == false) from job_pool.exists($job)
 then
    //find the turf in the datastore
    String key = $turfID.toString(); 
    Turf turf = turf_pool.find(key);
    //set the turf name on the job
-   $dispatched_job.setTurfName(turf.getName());
-   update($dispatched_job);
+   $job.setTurfName(turf.getName());
+   update($job);
    insert(turf);
 end
 
 
 rule "a job is dispatched , start time is set and it is not complete"
-   timer(expr: "10s", $duration ; start=$start)
+    timer(expr: "10s", $duration ; start=$start)
 when
-   $dispatched_job: Job( $id: id, $turfID : turfID,
+    $dispatched_job: Job( $id: id, $turfID : turfID,
                                         status == "DISPATCHED", 
                                         $start : startTime != null, 
                                         $duration : duration !=null )
 then
-   /** find exist the existing job in  data store and compare with rule's working memory **/
-   String key = $turfID.toString();
-   String field = $id.toString();
-   Job job = job_pool.find($dispatched_job);
-   /**  time difference current time to start time in minutes **/
-   int difference = RuleHelper.currentTimeDifferent($start);
-   if( difference > $duration && ( job!= null && !job.getStatus().equals("COMPLETE")) )
-   {     
+    /** find exist the existing job in  data store and compare with rule's working memory **/
+    String key = $turfID.toString();
+    String field = $id.toString();
+    Job job = job_pool.find($dispatched_job);
+
+    /**  time difference current time to start time in minutes **/
+    int difference = RuleHelper.currentTimeDifferent($start);
+    if( difference > $duration && ( job!= null && !job.getStatus().equals("COMPLETE")) )
+     {     
             if( !job.getActive() ) {	
                 int value = 1;
                 Turf turf = turf_pool.find(key);
@@ -91,12 +92,12 @@ end
 
 rule "a job is complete"
 when
-   $complete_job: Job($turfID : turfID, status == "COMPLETE")
+    $job: Job($turfID : turfID, status == "COMPLETE")
+    Boolean(booleanValue == false) from job_pool.exists($job)
 then
-   //find the turf in the datastore 
-   String key = $turfID.toString();
-   Turf turf = turf_pool.find(key);
-   $complete_job.setTurfName(turf.getName());
-   insert(turf);
-   insert($complete_job);
+    String key = $turfID.toString();
+    Turf turf = turf_pool.find(key);
+    $job.setTurfName(turf.getName());
+     insert(turf);
+     insert($job);
 end
