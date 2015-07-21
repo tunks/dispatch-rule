@@ -41,4 +41,10 @@ public class TurfPool extends BasePool <Turf>  {
          notifyObservers(object);
          return save(key,field,object);
 	}
+    
+      @Override
+       public boolean exists(String field){
+        String key = getPrimaryKey();
+        return exists(key,field);
+      }      
 }
