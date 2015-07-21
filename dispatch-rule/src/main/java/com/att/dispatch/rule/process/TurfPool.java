@@ -46,7 +46,8 @@ public class TurfPool extends BasePool <Turf>  {
        public boolean exists(String field){
          String key = getPrimaryKey();
          boolean exists = exists(key,field);
-         System.out.println("Turf exist "+exists);
+         System.out.println("Turf exist "+ exists);
+         System.out.println("field :"+field+ " key:" +key);
          return exists;
       }      
 }
