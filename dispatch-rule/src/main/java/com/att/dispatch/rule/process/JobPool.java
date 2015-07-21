@@ -31,4 +31,14 @@ public class JobPool extends BasePool<Job>{
     	String field = object.getId().toString();
     	return find(key,field);
     }
+
+   public boolean exists(Job object, String status){
+         String key = object.getTurfID().toString();
+         String field = object.getId().toString();
+         Job temp = find(key,field);
+         if(temp != null){
+            return  temp.getStatus().equals(status);
+         }
+         return false;
+   }
 }
