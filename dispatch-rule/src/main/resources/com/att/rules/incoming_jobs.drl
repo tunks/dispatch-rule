@@ -16,7 +16,6 @@ rule "a pending job"
   no-loop true
 when
     $job: Job( $id: id, $turfID : turfID, status =="PENDING" )
-    Boolean(booleanValue == false) from job_pool.exists($job)
 then
     String key = $turfID.toString();
     Turf turf = turf_pool.find(key);
@@ -32,7 +31,6 @@ rule "a job is dispatched"
 no-loop true
 when
      $job: Job($turfID : turfID, status == "DISPATCHED")
-     Boolean(booleanValue == false) from job_pool.exists($job)
 then
    //find the turf in the datastore
    String key = $turfID.toString(); 
@@ -92,7 +90,6 @@ end
 rule "a job is complete"
 when
     $job: Job($turfID : turfID, status == "COMPLETE")
-     Boolean(booleanValue == false) from job_pool.exists($job)
 then
     String key = $turfID.toString();
     Turf turf = turf_pool.find(key);
