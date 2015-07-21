@@ -15,7 +15,7 @@ global  com.att.dispatch.rule.process.TurfPool turf_pool
 rule "a pending job"
   no-loop true
 when
-   $new_job: Job($turfID : turfID, status =="PENDING" )
+   $new_job: Job( $id: id, $turfID : turfID, status =="PENDING" )
 then
    String key = $turfID.toString();
    Turf turf = turf_pool.find(key);
