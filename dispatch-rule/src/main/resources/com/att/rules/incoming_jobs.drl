@@ -84,16 +84,15 @@ then
           }
     }
     else{
-        retract($dispatched_job);
+          retract($dispatched_job);
     }
 
 end
 
-
 rule "a job is complete"
 when
     $job: Job($turfID : turfID, status == "COMPLETE")
-    Boolean(booleanValue == false) from job_pool.exists($job)
+     Boolean(booleanValue == false) from job_pool.exists($job)
 then
     String key = $turfID.toString();
     Turf turf = turf_pool.find(key);
