@@ -16,6 +16,9 @@ public class Flag implements java.io.Serializable
    {
    }
 
+   public Flag(String color){
+    this.color = color;
+   }
    public java.lang.Long getId()
    {
       return this.id;
