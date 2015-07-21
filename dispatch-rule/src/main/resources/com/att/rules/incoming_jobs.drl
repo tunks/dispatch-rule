@@ -97,7 +97,7 @@ when
 then
     String key = $turfID.toString();
     Turf turf = turf_pool.find(key);
-    $job.setTurfName(turf.getName());
+     $job.setTurfName(turf.getName());
      insert(turf);
      insert($job);
 end
