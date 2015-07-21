@@ -9,7 +9,7 @@ rule "a turf is added"
 no-loop true
 when
    $turf : Turf($id: id, active == false)
-    Boolean(booleanValue == false) from turf_pool.exists($id.toString())
+    Boolean(booleanValue == true) from turf_pool.exists($id.toString())
 then
   //update the store and send message
    modify($turf){ setActive(true) }
